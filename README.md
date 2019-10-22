@@ -31,6 +31,7 @@ sudo apt install build-essential libssl-dev libffi-dev python-dev
 Now you should have all the tools to start python programming! Yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaay.
 
 ### Setup Project 
+[Source](https://www.digitalocean.com/community/tutorials/how-to-build-a-modern-web-application-to-manage-customer-information-with-django-and-react-on-ubuntu-18-04)
 
 Navigate to wherever you want to keep the backend repo, and run
 ```
@@ -57,4 +58,14 @@ Then install django.
 pip install django djangorestframework django-cors-headers
 ```
 
-...
+Move into the first project folder
+```
+cd twistrbackend
+```
+
+Start the server! Yaaaaaaaaaaaaaaay 2: Electric Boogaloo
+```
+python manage.py runserver
+```
+
+Go to localhost ... blah blah blah

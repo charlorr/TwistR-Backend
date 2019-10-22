@@ -42,3 +42,19 @@ Move into the repo
 cd TwistR-Backend/
 ```
 
+To make a python virtual environment, run
+```
+python3 -m venv ./env
+```
+
+Then start it with,
+```
+source env/bin/activate
+```
+
+Then install django.
+```
+pip install django djangorestframework django-cors-headers
+```
+
+...

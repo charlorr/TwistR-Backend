@@ -47,7 +47,7 @@ def users_detail(request, pk):
  """
     try:
         user = User.objects.get(pk=pk)
-    except USer.DoesNotExist:
+    except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':

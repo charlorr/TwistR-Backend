@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User
 from .serializers import *
 
@@ -13,25 +13,21 @@ def users_list(request):
  """
     if request.method == 'GET':
         data = []
-        nextPage = 1
-        previousPage = 1
-        users = User.objects.all()
-        page = request.GET.get('page', 1)
-        paginator = Paginator(users, 10)
-        try:
-            data = paginator.page(page)
-        except PageNotAnInteger:
-            data = paginator.page(1)
-        except EmptyPage:
-            data = paginator.page(paginator.num_pages)
+
+        data = User.objects.all()
+
+        username_param = request.query_params.get('username', None)
+        email_param = request.query_params.get('email', None)
+
+        if username_param is not None:
+            data = data.filter(username=username_param)
+
+        if email_param is not None:
+            data = data.filter(email=email_param)
 
         serializer = UserSerializer(data,context={'request': request},many=True)
-        if data.has_next():
-            nextPage = data.next_page_number()
-        if data.has_previous():
-            previousPage = data.previous_page_number()
 
-        return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/users/?page=' + str(nextPage), 'prevlink': '/api/users/?page=' + str(previousPage)})
+        return Response({'data': serializer.data  })
 
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)

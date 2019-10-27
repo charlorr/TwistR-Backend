@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users import views
+from users import views as users_views
+from posts import views as posts_views
 from django.conf.urls import url
 
 urlpatterns = [
@@ -23,4 +24,10 @@ urlpatterns = [
     url(r'^api/users/$', views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', views.users_detail),
     url(r'^api/users/test', views.user_creation_test, name='create-account-test'),
+    url(r'^api/users/$', users_views.users_list),
+    url(r'^api/users/(?P<pk>[0-9]+)$', users_views.users_detail),
+    url(r'^api/posts/$', posts_views.posts_list),
+    url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),
+    url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
+    # url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
 ]

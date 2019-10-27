@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     pass    #what the heck is this
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'phoneNumber', 'first_name', 'last_name', 'password', 'bio', 'joined_date']
+    REQUIRED_FIELDS = ['username', 'phone_number', 'first_name', 'last_name', 'password', 'bio', 'joined_date']
 
     username = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
-    phoneNumber = models.CharField("Phone Number", max_length=30, default='')
+    phone_number = models.CharField("Phone Number", max_length=30, default='')
     first_name = models.CharField("First Name", max_length=30, default='')
     last_name = models.CharField("Last Name", max_length=30, default='')
     password = models.CharField(max_length=30, default='')

@@ -1,16 +1,23 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User
 from .serializers import *
 
+#use this if the endpoint does not require authentication
+#@permission_classes((AllowAny,))
+
 @api_view(['GET', 'POST'])
+#@permission_classes((AllowAny,))
 def users_list(request):
     """
  List users, or create a new user.
  """
+
     if request.method == 'GET':
         data = []
         nextPage = 1
@@ -34,11 +41,13 @@ def users_list(request):
         return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/users/?page=' + str(nextPage), 'prevlink': '/api/users/?page=' + str(previousPage)})
 
     elif request.method == 'POST':
+
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print(serializer)
+            #serializer.save()
+            #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def users_detail(request, pk):
@@ -64,3 +73,16 @@ def users_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def user_creation_test(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        print(serializer)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token' : token.key},status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

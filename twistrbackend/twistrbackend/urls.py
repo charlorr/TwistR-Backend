@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/users/$', views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', views.users_detail),
+    url(r'^api/users/test', views.user_creation_test, name='create-account-test'),
 ]

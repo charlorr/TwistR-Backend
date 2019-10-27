@@ -27,9 +27,9 @@ def tags_by_user(request, pk):
  """
     data = []
 
-    data = Post.objects.filter(author=pk).order_by('-posted_date')
+    data = Tag.objects.filter(post__author=pk)
 
-    serializer = PostSerializer(data,context={'request': request},many=True)
+    serializer = TagSerializer(data,context={'request': request},many=True)
 
     return Response({'data': serializer.data})
 

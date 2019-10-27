@@ -21,11 +21,14 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     url(r'^api/users/$', users_views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', users_views.users_detail),
+
     url(r'^api/posts/$', posts_views.posts_list),
     url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),
     url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
-    url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
+
     url(r'^api/tags/$', posts_views.tags_list),
+    url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
 ]

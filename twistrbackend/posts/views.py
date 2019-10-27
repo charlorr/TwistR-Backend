@@ -20,7 +20,21 @@ def posts_by_user(request, pk):
 
     return Response({'data': serializer.data})
 
+# @api_view(['GET'])
+# def posts_by_user(request, pk):
+#     """
+#  List posts, or create a new post.
+#  """
+#     data = []
+
+#     data = Post.objects.filter(author=pk).order_by('-posted_date')
+
+#     serializer = PostSerializer(data,context={'request': request},many=True)
+
+#     return Response({'data': serializer.data})
+
 # Lists all posts sorted by most recent-- Can be used for explore page
+
 @api_view(['GET', 'POST'])
 def posts_list(request):
     """

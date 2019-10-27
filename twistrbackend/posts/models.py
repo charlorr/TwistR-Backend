@@ -8,3 +8,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.author
+
+# class Tag(models.Model):
+#     name = models.CharField(max_length=20)
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return self.name

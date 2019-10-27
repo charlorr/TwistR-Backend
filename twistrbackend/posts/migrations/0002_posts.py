@@ -6,7 +6,7 @@ from users.models import User
 def create_data(apps, schema_editor):
     Post = apps.get_model('posts', 'Post')
     author_user = User.objects.get(pk=1)
-    author_user.post_set.create(text="guys only want one thing and it's fucking disgusting").save()
+    author_user.post_set.create(text_body="guys only want one thing and it's fucking disgusting").save()
 
 class Migration(migrations.Migration):
 

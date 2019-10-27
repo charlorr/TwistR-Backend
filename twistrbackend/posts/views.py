@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from .models import Post
+from .models import Post, Tag
 from .serializers import *
 
 # Gets posts by a user in reverse order (most recent first)
@@ -20,18 +20,18 @@ def posts_by_user(request, pk):
 
     return Response({'data': serializer.data})
 
-# @api_view(['GET'])
-# def posts_by_user(request, pk):
-#     """
-#  List posts, or create a new post.
-#  """
-#     data = []
+@api_view(['GET'])
+def tags_by_user(request, pk):
+    """
+ List posts, or create a new post.
+ """
+    data = []
 
-#     data = Post.objects.filter(author=pk).order_by('-posted_date')
+    data = Post.objects.filter(author=pk).order_by('-posted_date')
 
-#     serializer = PostSerializer(data,context={'request': request},many=True)
+    serializer = PostSerializer(data,context={'request': request},many=True)
 
-#     return Response({'data': serializer.data})
+    return Response({'data': serializer.data})
 
 # Lists all posts sorted by most recent-- Can be used for explore page
 
@@ -51,6 +51,27 @@ def posts_list(request):
 
     elif request.method == 'POST':
         serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST'])
+def tags_list(request):
+    """
+ List posts, or create a new post.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = Tag.objects.all()
+
+        serializer = TagSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = TagSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -93,6 +93,7 @@ def user_login(request):
     }, status = status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['DELETE'])
+#deleete
 def user_delete(request,pk):
     try:
         user = User.objects.get(pk=pk)

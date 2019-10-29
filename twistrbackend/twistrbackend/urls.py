@@ -15,17 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
 from users import views as users_views
 from posts import views as posts_views
 from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^api/auth/', include('knox.urls')),
+    url(r'^api/users/$', users_views.users_list),
+    url(r'^api/users/delete/(?P<pk>[0-9]+)$', users_views.user_delete),
+    url(r'^api/users/register/$', users_views.user_register, name='create-account-test'),
     url(r'^api/users/$', users_views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', users_views.users_detail),
+    url(r'^api/users/login/$', users_views.user_login),
+    
     url(r'^api/posts/$', posts_views.posts_list),
     url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),
     url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
+<<<<<<< HEAD
     url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
     url(r'^api/tags/$', posts_views.tags_list),
+=======
+
+>>>>>>> 428ba24ecd44664eea6254e4d3f78c2428dbf3e0
 ]

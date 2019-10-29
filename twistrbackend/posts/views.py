@@ -33,6 +33,19 @@ def tags_by_user(request, pk):
 
     return Response({'data': serializer.data})
 
+@api_view(['GET'])
+def tags_by_post(request, pk):
+    """
+ List posts, or create a new post.
+ """
+    data = []
+
+    data = Tag.objects.filter(post=pk)
+
+    serializer = TagSerializer(data,context={'request': request},many=True)
+
+    return Response({'data': serializer.data})
+
 # Lists all posts sorted by most recent-- Can be used for explore page
 
 @api_view(['GET', 'POST'])

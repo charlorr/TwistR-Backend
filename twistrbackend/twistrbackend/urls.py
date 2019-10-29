@@ -31,4 +31,5 @@ urlpatterns = [
 
     url(r'^api/tags/$', posts_views.tags_list),
     url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
+    url(r'^api/posttags/(?P<pk>[0-9]+)$', posts_views.tags_by_post),
 ]

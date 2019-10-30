@@ -5,11 +5,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status, permissions
 from knox.models import AuthToken
 
-from .models import User
+from .models import User, Twist
 from .serializers import *
 
-#use this if the endpoint does not require authentication
-#@permission_classes((AllowAny,))
+# Add decorator if the endpoint does not require authentication, or for testing
+# @permission_classes((AllowAny,))
 
 @api_view(['GET'])
 @permission_classes((AllowAny,))
@@ -51,7 +51,6 @@ def users_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        print("hello")
         serializer =  UserSerializer(user, data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -98,3 +97,87 @@ def user_delete(request,pk):
     name = user.username
     user.delete()
     return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def twists_list(request):
+    """
+ List twists, or create a new twist.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = Twist.objects.all()
+
+        serializer = TwistSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = TwistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AllowAny,))
+def twists_detail(request, pk):
+    """
+ Retrieve, update or delete a twist by id/pk.
+ """
+    try:
+        twist = Twist.objects.get(pk=pk)
+    except Twist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = TwistSerializer(twist,context={'request': request})
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = TwistSerializer(twist, data=request.data,context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        twist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def followers_by_user(request, pk):
+#     """
+#  Get users following specified user
+#  """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+
+#     data = Twists.objects.filter(author=pk)
+
+#     serializer = TwistSerializer(twist,context={'request': request})
+#     return Response(serializer.data)
+
+
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def following_by_user(request, pk):
+#     """
+#  Get users a specified user follows
+#  """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+
+#     data = Twist.objects.filter(user=pk)
+
+#     serializer = TwistSerializer(twist,context={'request': request})
+#     return Response(serializer.data)

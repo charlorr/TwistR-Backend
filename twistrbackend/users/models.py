@@ -1,6 +1,8 @@
 from django.db import models
-import datetime
 from django.contrib.auth.models import AbstractUser
+# from posts.models import Tag
+
+import datetime
 
 class User(AbstractUser):
     pass    #what the heck is this
@@ -18,3 +20,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class Twist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='twist_user')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='twist_author')
+    # tag = model.ForeignKey(Tag, on_delete=model.CASCADE)
+
+    def __str__(self):
+        return self.user
+

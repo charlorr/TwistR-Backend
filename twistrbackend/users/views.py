@@ -37,6 +37,7 @@ def users_list(request):
         return Response({'data': serializer.data  })
 
 @api_view(['GET', 'PUT'])
+@permission_classes((AllowAny,))
 def users_detail(request, pk):
     """
  Retrieve, update or delete a user by id/pk.
@@ -70,12 +71,7 @@ def user_register(request):
             "user" : serializer.data,
             "token" : AuthToken.objects.create(user)[1]
         })
-    else:
-        return Response({
-            "user" : "something went wrong"
-        })
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 @api_view(['POST'])
 @permission_classes((AllowAny,))

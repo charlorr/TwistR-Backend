@@ -37,6 +37,7 @@ def users_list(request):
         return Response({'data': serializer.data  })
 
 @api_view(['GET', 'PUT'])
+@permission_classes((AllowAny,))
 def users_detail(request, pk):
     """
  Retrieve, update or delete a user by id/pk.

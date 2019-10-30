@@ -1,6 +1,8 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
+
+from rest_framework.permissions import AllowAny
 
 from .models import Post
 from .serializers import *
@@ -8,6 +10,7 @@ from .serializers import *
 # Gets posts by a user in reverse order (most recent first)
 
 @api_view(['GET'])
+@permission_classes((AllowAny,))
 def posts_by_user(request, pk):
     """
  List posts, or create a new post.
@@ -20,22 +23,24 @@ def posts_by_user(request, pk):
 
     return Response({'data': serializer.data})
 
-# @api_view(['GET'])
-# def posts_by_user(request, pk):
-#     """
-#  List posts, or create a new post.
-#  """
-#     data = []
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def posts_by_user(request, pk):
+    """
+ List posts, or create a new post.
+ """
+    data = []
 
-#     data = Post.objects.filter(author=pk).order_by('-posted_date')
+    data = Post.objects.filter(author=pk).order_by('-posted_date')
 
-#     serializer = PostSerializer(data,context={'request': request},many=True)
+    serializer = PostSerializer(data,context={'request': request},many=True)
 
-#     return Response({'data': serializer.data})
+    return Response({'data': serializer.data})
 
 # Lists all posts sorted by most recent-- Can be used for explore page
 
 @api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
 def posts_list(request):
     """
  List posts, or create a new post.
@@ -57,6 +62,7 @@ def posts_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AllowAny,))
 def posts_detail(request, pk):
     """
  Retrieve, update or delete a post by id/pk.

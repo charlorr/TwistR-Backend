@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^api/posttags/(?P<pk>[0-9]+)$', posts_views.tags_by_post),
 
     url(r'^api/twists/$', users_views.twists_list),
+    url(r'^api/unfollow/$', users_views.unfollow),
     url(r'^api/twists/(?P<pk>[0-9]+)$', users_views.twists_detail),
     # url(r'^api/twists/(?P<pk>[0-9]+)$', users_views.follower_count),
     # url(r'^api/twists/(?P<pk>[0-9]+)$', users_views.following_count),

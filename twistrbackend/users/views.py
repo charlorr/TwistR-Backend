@@ -120,6 +120,26 @@ def twists_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+@permission_classes((AllowAny,))
+def unfollow(request):
+    """
+ Unfollow a user by deleting the twist that connects the user / author
+ """
+
+    data = Twist.objects.all()
+
+    user_param = request.query_params.get('user', None)
+    author_param = request.query_params.get('author', None)
+
+    if user_param is not None:
+        data = data.filter(user=user_param)
+
+    if author_param is not None:
+        data = data.filter(author=author_param)
+        data.delete()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((AllowAny,))

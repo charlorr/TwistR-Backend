@@ -1,46 +1,42 @@
+from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework import status, permissions
+from knox.models import AuthToken
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User
 from .serializers import *
 
-@api_view(['GET', 'POST'])
+#use this if the endpoint does not require authentication
+#@permission_classes((AllowAny,))
+
+@api_view(['GET'])
+@permission_classes((AllowAny,))
 def users_list(request):
     """
  List users, or create a new user.
  """
     if request.method == 'GET':
         data = []
-        nextPage = 1
-        previousPage = 1
-        users = User.objects.all()
-        page = request.GET.get('page', 1)
-        paginator = Paginator(users, 10)
-        try:
-            data = paginator.page(page)
-        except PageNotAnInteger:
-            data = paginator.page(1)
-        except EmptyPage:
-            data = paginator.page(paginator.num_pages)
 
-        serializer = UserSerializer(data,context={'request': request},many=True)
-        if data.has_next():
-            nextPage = data.next_page_number()
-        if data.has_previous():
-            previousPage = data.previous_page_number()
+        data = User.objects.all()
 
-        return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/users/?page=' + str(nextPage), 'prevlink': '/api/users/?page=' + str(previousPage)})
+        username_param = request.query_params.get('username', None)
+        email_param = request.query_params.get('email', None)
 
-    elif request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if username_param is not None:
+            data = data.filter(username=username_param)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+        if email_param is not None:
+            data = data.filter(email=email_param)
+
+        serializer =  UserSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data  })
+
+@api_view(['GET', 'PUT'])
+@permission_classes((AllowAny,))
 def users_detail(request, pk):
     """
  Retrieve, update or delete a user by id/pk.
@@ -51,16 +47,54 @@ def users_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = UserSerializer(user,context={'request': request})
+        serializer =  UserSerializer(user,context={'request': request})
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = UserSerializer(user, data=request.data,context={'request': request})
+        print("hello")
+        serializer =  UserSerializer(user, data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def user_register(request):
+    print(request)
+    serializer =  UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        print(serializer)
+        return Response({
+            "user" : serializer.data,
+            "token" : AuthToken.objects.create(user)[1]
+        })
+    return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def user_login(request):
+    serializer = LoginUserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.validated_data
+        print(user.pk)
+        return Response({
+            "user_pk" : user.pk,
+            "token" : AuthToken.objects.create(user)[1]
+        }, status=status.HTTP_200_OK)
+    return Response({
+        "error" : "unable to log in"
+    }, status = status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['DELETE'])
+#deleete2
+def user_delete(request,pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    name = user.username
+    user.delete()
+    return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)

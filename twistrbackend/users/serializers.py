@@ -30,16 +30,8 @@ class LoginUserSerializer (serializers.Serializer):
                 return user
             raise serializers.ValidationError("Unable to login with credentials")
 
-<<<<<<< HEAD
 class TwistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Twist
         fields = ('user', 'author')
-=======
-# class PlainPasswordSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = PlainPassword
-#         fields = ('pk', 'user', 'password')
->>>>>>> authentication2

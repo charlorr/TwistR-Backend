@@ -47,4 +47,5 @@ urlpatterns = [
     # url(r'^api/twists/(?P<pk>[0-9]+)$', users_views.following_count),
     # Get followers by user
     # Get following by user
+    url(r'^api/password/$', users_views.password_by_user),
 ]

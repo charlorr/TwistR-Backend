@@ -8,7 +8,7 @@ from knox.models import AuthToken
 from django.core.mail import send_mail
 from .models import User
 
-from .models import User, PlainPassword
+from .models import User
 from .serializers import *
 from django.conf import settings
 

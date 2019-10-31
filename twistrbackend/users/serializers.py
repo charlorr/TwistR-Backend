@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import User, PlainPassword
+from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -30,8 +30,8 @@ class LoginUserSerializer (serializers.Serializer):
                 return user
             raise serializers.ValidationError("Unable to login with credentials")
 
-class PlainPasswordSerializer(serializers.ModelSerializer):
+# class PlainPasswordSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = PlainPassword
-        fields = ('pk', 'user', 'password')
+#     class Meta:
+#         model = PlainPassword
+#         fields = ('pk', 'user', 'password')

@@ -19,10 +19,10 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-class PlainPassword(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    password = models.CharField(max_length=30, default='')
+#class PlainPassword(models.Model):
+#    user = models.ForeignKey(User, on_delete=models.CASCADE)
+#    password = models.CharField(max_length=30, default='')
 
-    def __str__(self):
-        return self.password
+#    def __str__(self):
+#        return self.password
 

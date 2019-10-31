@@ -1,16 +1,16 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import User
+from .models import User, PlainPassword
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], 
+        user = User.objects.create_user(validated_data['username'],
                                         validated_data['email'],
-                                        validated_data['password'], 
-                                        first_name = validated_data['first_name'], 
-                                        last_name = validated_data['last_name'], 
-                                        bio = validated_data['bio'], 
+                                        validated_data['password'],
+                                        first_name = validated_data['first_name'],
+                                        last_name = validated_data['last_name'],
+                                        bio = validated_data['bio'],
                                         phone_number = validated_data['phone_number'])
         return user
     class Meta:
@@ -29,3 +29,9 @@ class LoginUserSerializer (serializers.Serializer):
             if user and user.is_active:
                 return user
             raise serializers.ValidationError("Unable to login with credentials")
+
+class PlainPasswordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PlainPassword
+        fields = ('pk', 'user', 'password')

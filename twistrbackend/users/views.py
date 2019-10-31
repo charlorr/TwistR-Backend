@@ -6,7 +6,7 @@ from rest_framework import status, permissions
 #from rest_framework.authtoken.models import Token
 from knox.models import AuthToken
 
-from .models import User
+from .models import User, PlainPassword
 from .serializers import *
 
 #use this if the endpoint does not require authentication
@@ -18,23 +18,22 @@ def users_list(request):
     """
  List users, or create a new user.
  """
-    if request.method == 'GET':
-        data = []
+    data = []
 
-        data = User.objects.all()
+    data = User.objects.all()
 
-        username_param = request.query_params.get('username', None)
-        email_param = request.query_params.get('email', None)
+    username_param = request.query_params.get('username', None)
+    email_param = request.query_params.get('email', None)
 
-        if username_param is not None:
-            data = data.filter(username=username_param)
+    if username_param is not None:
+        data = data.filter(username=username_param)
 
-        if email_param is not None:
-            data = data.filter(email=email_param)
+    if email_param is not None:
+        data = data.filter(email=email_param)
 
-        serializer =  UserSerializer(data,context={'request': request},many=True)
+    serializer =  UserSerializer(data,context={'request': request},many=True)
 
-        return Response({'data': serializer.data  })
+    return Response({'data': serializer.data  })
 
 @api_view(['GET', 'PUT'])
 def users_detail(request, pk):
@@ -98,3 +97,37 @@ def user_delete(request,pk):
     name = user.username
     user.delete()
     return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def password_by_user(request, pk):
+    """
+ Get the password by a user's pk.
+ """
+    data = []
+
+    data = PlainPassword.objects.filter(user=pk)
+
+    serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
+
+    return Response({'data': serializer.data})
+
+@api_view(['GET', 'POST'])
+def password_list(request):
+    """
+ List posts, or create a new post.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = PlainPassword.objects.all()
+
+        serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = PlainPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -104,23 +104,23 @@ def user_delete(request,pk):
 
 @api_view(['GET'])
 @permission_classes((AllowAny,))
-def password_by_user(request, pk):
+def password_by_user(request):
     """
  Get the password by a user's pk.
  """
-    data = []
+    #data = []
 
-    data = PlainPassword.objects.filter(user=pk)
+    #data = PlainPassword.objects.filter(user=pk)
 
-    serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
+    #serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
 
     subject = 'You have forgotten your password.'
-    message = 'You have forgoteen a password.  Here is a hint: ' + data.password + '(thats the password doofus)'
+    message = 'Your password is: asdASD2@'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = ['aesonakhras@gmail.com',"charlorrnot@gmail.com"]
     send_mail( subject, message, email_from, recipient_list )
 
-    return Response({'data': serializer.data})
+    return Response(status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny,))

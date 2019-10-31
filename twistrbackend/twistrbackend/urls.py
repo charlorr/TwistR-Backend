@@ -34,6 +34,5 @@ urlpatterns = [
     url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),
     url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
 
-    url(r'^api/password/$', users_views.password_list),
-    url(r'^api/password/(?P<pk>[0-9]+)$', users_views.password_by_user),
+    url(r'^api/password/$', users_views.password_by_user),
 ]

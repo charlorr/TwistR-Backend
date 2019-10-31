@@ -5,9 +5,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status, permissions
 #from rest_framework.authtoken.models import Token
 from knox.models import AuthToken
-
+from django.core.mail import send_mail
 from .models import User
 from .serializers import *
+from django.conf import settings
 
 #use this if the endpoint does not require authentication
 #@permission_classes((AllowAny,))
@@ -98,3 +99,19 @@ def user_delete(request,pk):
     name = user.username
     user.delete()
     return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def reset_password(request):
+    subject = 'you might have forgotten your password'
+    message = 'you have forgoteen a password.  Here is a hint: (thats the password doofus)'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['aesonakhras@gmail.com',"charlorrnot@gmail.com"]
+    send_mail( subject, message, email_from, recipient_list )
+
+
+    return Response( status=status.HTTP_204_NO_CONTENT)
+    #name = user.username
+    #user.delete()
+    #return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)

@@ -111,8 +111,16 @@ def twists_list(request):
         data = []
 
         data = Twist.objects.all()
-
-        serializer = TwistSerializer(data,context={'request': request},many=True)
+        user_param = request.query_params.get('user', None)
+        author_param = request.query_params.get('author', None)
+ 
+        if user_param is not None:
+            data = data.filter(user=user_param)
+ 
+        if author_param is not None:
+            data = data.filter(author=author_param)
+ 
+       serializer = TwistSerializer(data,context={'request': request},many=True)
 
         return Response({'data': serializer.data})
 

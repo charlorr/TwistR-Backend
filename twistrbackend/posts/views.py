@@ -89,6 +89,7 @@ def posts_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
 def tags_list(request):
     """
  List posts, or create a new post.

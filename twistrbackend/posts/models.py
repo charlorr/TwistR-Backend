@@ -4,6 +4,7 @@ from users.models import User
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text_body = models.CharField(max_length=280)
+    text_body = models.IntegerField(default=0)
     posted_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

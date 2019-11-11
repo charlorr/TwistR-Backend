@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import User, Twist
+from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -29,9 +29,3 @@ class LoginUserSerializer (serializers.Serializer):
             if user and user.is_active:
                 return user
             raise serializers.ValidationError("Unable to login with credentials")
-
-class TwistSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Twist
-        fields = ('user', 'author')

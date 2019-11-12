@@ -48,6 +48,7 @@ def unfollow(request):
 
     user_param = request.query_params.get('user', None)
     author_param = request.query_params.get('author', None)
+    tag_param = request.query_params.get('tag', )
 
     if user_param is not None:
         data = data.filter(user=user_param)
@@ -55,6 +56,8 @@ def unfollow(request):
     if author_param is not None:
         data = data.filter(author=author_param)
         data.delete()
+
+    if
 
     return Response(status=status.HTTP_204_NO_CONTENT)
 

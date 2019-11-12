@@ -148,11 +148,11 @@ def tags_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = TagSerializer(post,context={'request': request})
+        serializer = TagSerializer(tag,context={'request': request})
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = TagSerializer(post, data=request.data,context={'request': request})
+        serializer = TagSerializer(tag, data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

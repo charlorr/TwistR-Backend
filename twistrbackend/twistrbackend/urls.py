@@ -43,7 +43,7 @@ urlpatterns = [
 
     url(r'^api/twists/$', twists_views.twists_list),
     url(r'^api/twists/(?P<pk>[0-9]+)$', twists_views.twists_detail),
-    url(r'^api/unfollow/$', twists_views.unfollow),
+    url(r'^api/unfollow/$', twists_views.unfollow), # Pass in user pk, author pk, and tag name
     url(r'^api/userstwists/(?P<pk>[0-9]+)$', twists_views.twists_by_user),
     url(r'^api/userlinetwists/(?P<pku>[0-9]+)/(?P<pka>[0-9]+)$', twists_views.twists_by_author),
     # url(r'^api/twists/(?P<pk>[0-9]+)$', users_views.follower_count),

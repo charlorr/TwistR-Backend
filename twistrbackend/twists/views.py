@@ -57,8 +57,6 @@ def unfollow(request):
         data = data.filter(author=author_param)
         data.delete()
 
-    if
-
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])

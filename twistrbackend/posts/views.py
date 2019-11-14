@@ -25,27 +25,13 @@ def posts_by_user(request, pk):
 
 @api_view(['GET'])
 @permission_classes((AllowAny,))
-def posts_by_user(request, pk):
-    """
- List posts, or create a new post.
- """
-    data = []
-
-    data = Post.objects.filter(author=pk).order_by('-posted_date')
-
-    serializer = PostSerializer(data,context={'request': request},many=True)
-
-    return Response({'data': serializer.data})
-
-@api_view(['GET'])
-@permission_classes((AllowAny,))
 def tags_by_user(request, pk):
     """
  List posts, or create a new post.
  """
     data = []
 
-    data = Tag.objects.filter(post__author=pk)
+    data = Tag.objects.filter(post__author=pk).distinct('name')
 
     serializer = TagSerializer(data,context={'request': request},many=True)
 
@@ -162,3 +148,18 @@ def tags_detail(request, pk):
         tag.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Get all posts for timeline based on twists
+
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def relevant_posts(request, pk):
+#     """
+#  Retrieve, update or delete a post by id/pk.
+#  """
+#     try:
+#         tag = Tag.objects.get(pk=pk)
+#     except Tag.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+
+#     serializer = TagSerializer(tag,context={'request': request})
+#     return Response(serializer.data)

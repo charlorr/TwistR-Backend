@@ -5,8 +5,10 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 from .models import Post, Tag
+from users.models import User
 from twists.models import Twist
 from .serializers import *
+from users.serializers import *
 
 # Gets posts by a user in reverse order (most recent first)
 
@@ -162,9 +164,14 @@ def relevant_posts(request, pk):
  """
 
     # Get objects posts from a user first
-    data = []
 
-    data = Post.objects.filter(author=pk).order_by('-posted_date')
+    twists = Twist.objects.filter(user=pk)
+
+    author_pks = twists.values_list('author', flat=True)
+    tag_names = twists.values_list('tag', flat=True)
+
+    data = []
+    data = Post.objects.filter(author__in=author_pks).order_by('-posted_date').filter(tag__name__in=tag_names).distinct()
 
     serializer = PostSerializer(data,context={'request': request},many=True)
 

@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 from .models import Post, Tag
+from twists.models import Twist
 from .serializers import *
 
 # Gets posts by a user in reverse order (most recent first)
@@ -31,13 +32,16 @@ def tags_by_user(request, pk):
  """
     data = []
 
-    data = Tag.objects.filter(post__author=pk).distinct('name')
+    # Distinct on won't work on SQL
+    # data = Tag.objects.filter(post__author=pk).distinct('name')
+    data = Tag.objects.filter(post__author=pk)
 
     serializer = TagSerializer(data,context={'request': request},many=True)
 
     return Response({'data': serializer.data})
 
 @api_view(['GET'])
+@permission_classes((AllowAny,))
 def tags_by_post(request, pk):
     """
  List posts, or create a new post.
@@ -150,16 +154,18 @@ def tags_detail(request, pk):
 
 # Get all posts for timeline based on twists
 
-# @api_view(['GET'])
-# @permission_classes((AllowAny,))
-# def relevant_posts(request, pk):
-#     """
-#  Retrieve, update or delete a post by id/pk.
-#  """
-#     try:
-#         tag = Tag.objects.get(pk=pk)
-#     except Tag.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def relevant_posts(request, pk):
+    """
+ Retrieve, update or delete a post by id/pk.
+ """
 
-#     serializer = TagSerializer(tag,context={'request': request})
-#     return Response(serializer.data)
+    # Get objects posts from a user first
+    data = []
+
+    data = Post.objects.filter(author=pk).order_by('-posted_date')
+
+    serializer = PostSerializer(data,context={'request': request},many=True)
+
+    return Response({'data': serializer.data})

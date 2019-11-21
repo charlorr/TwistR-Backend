@@ -29,13 +29,17 @@ class LoginUserSerializer (serializers.Serializer):
             print(data)
             user = authenticate(**data)
             if user and user.is_active:
+                print("This is what coming2")
                 return user
             else:
-                try_user = User.objects.get(username=data.get('username'))
-                print(try_user.email)
-                data["username"] = try_user.email
-                user = authenticate(**data)
-                if user and user.is_active:
-                    return user
-                #try to find the user by username, as it may have been input
+                try:
+                    try_user = User.objects.get(username=data.get('username'))
+                    print("uh-oh stinky")
+                    print(try_user.email)
+                    data["username"] = try_user.email
+                    user = authenticate(**data)
+                    if user and user.is_active:
+                        return user
+                except User.DoesNotExist:
+                    print ("poop and shit")
             raise serializers.ValidationError("Unable to login with credentials")

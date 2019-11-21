@@ -16,7 +16,7 @@ from users.serializers import *
 @permission_classes((AllowAny,))
 def posts_by_user(request, pk):
     """
- List posts, or create a new post.
+ List posts written by a specified user.
  """
     data = []
 
@@ -30,15 +30,16 @@ def posts_by_user(request, pk):
 @permission_classes((AllowAny,))
 def tags_by_user(request, pk):
     """
- List posts, or create a new post.
+ Get all of user's tags.
  """
-    data = []
+    tags = []
 
-    # Distinct on won't work on SQL
-    # data = Tag.objects.filter(post__author=pk).distinct('name')
-    data = Tag.objects.filter(post__author=pk)
+    tag_names = Tag.objects.filter(post__author=pk).values_list('name', flat=True).distinct()
 
-    serializer = TagSerializer(data,context={'request': request},many=True)
+    for tag_name in tag_names:
+        tags.append(Tag.objects.filter(name=tag_name).first())
+
+    serializer = TagSerializer(tags,context={'request': request},many=True)
 
     return Response({'data': serializer.data})
 
@@ -46,7 +47,7 @@ def tags_by_user(request, pk):
 @permission_classes((AllowAny,))
 def tags_by_post(request, pk):
     """
- List posts, or create a new post.
+ Get a post's tags.
  """
     data = []
 
@@ -132,7 +133,7 @@ def posts_detail(request, pk):
 @permission_classes((AllowAny,))
 def tags_detail(request, pk):
     """
- Retrieve, update or delete a post by id/pk.
+ Retrieve, update or delete a tag by id/pk.
  """
     try:
         tag = Tag.objects.get(pk=pk)
@@ -160,7 +161,7 @@ def tags_detail(request, pk):
 @permission_classes((AllowAny,))
 def relevant_posts(request, pk):
     """
- Retrieve, update or delete a post by id/pk.
+ Get posts in accordance with a user's twists
  """
 
     # Get objects posts from a user first

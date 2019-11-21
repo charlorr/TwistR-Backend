@@ -39,7 +39,7 @@ urlpatterns = [
 
     url(r'^api/tags/$', posts_views.tags_list),
     url(r'^api/tags/(?P<pk>[0-9]+)$', posts_views.tags_detail),
-    url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),  # Remove duplicates returned from this method
+    url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),
     url(r'^api/posttags/(?P<pk>[0-9]+)$', posts_views.tags_by_post),
 
     url(r'^api/twists/$', twists_views.twists_list),
@@ -47,5 +47,4 @@ urlpatterns = [
     url(r'^api/unfollow/$', twists_views.unfollow), # Pass in user pk, author pk, and tag name
     url(r'^api/userstwists/(?P<pk>[0-9]+)$', twists_views.twists_by_user),
     url(r'^api/userlinetwists/(?P<pku>[0-9]+)/(?P<pka>[0-9]+)$', twists_views.twists_by_author),
-    url(r'^api/password/$', users_views.password_by_user),
 ]

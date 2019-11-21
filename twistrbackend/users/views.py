@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework import status, permissions
-#from rest_framework.authtoken.models import Token
 from knox.models import AuthToken
 from django.core.mail import send_mail
 from .models import User
@@ -90,7 +89,6 @@ def user_login(request):
     }, status = status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['DELETE'])
-#deleete2
 def user_delete(request,pk):
     try:
         user = User.objects.get(pk=pk)
@@ -100,45 +98,3 @@ def user_delete(request,pk):
     name = user.username
     user.delete()
     return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET'])
-@permission_classes((AllowAny,))
-def password_by_user(request):
-    """
- Get the password by a user's pk.
- """
-    #data = []
-
-    #data = PlainPassword.objects.filter(user=pk)
-
-    #serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
-
-    subject = 'You have forgotten your password.'
-    message = 'Your password is: asdASD2@'
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['aesonakhras@gmail.com',"charlorrnot@gmail.com"]
-    send_mail( subject, message, email_from, recipient_list )
-
-    return Response(status=status.HTTP_201_CREATED)
-
-@api_view(['GET', 'POST'])
-@permission_classes((AllowAny,))
-def password_list(request):
-    """
- List posts, or create a new post.
- """
-    if request.method == 'GET':
-        data = []
-
-        data = PlainPassword.objects.all()
-
-        serializer = PlainPasswordSerializer(data,context={'request': request},many=True)
-
-        return Response({'data': serializer.data})
-
-    elif request.method == 'POST':
-        serializer = PlainPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

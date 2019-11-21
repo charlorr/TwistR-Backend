@@ -25,7 +25,17 @@ class LoginUserSerializer (serializers.Serializer):
 
     def validate(self, data):
             # ** unpacks the data into authenticate w/ dictiionary key-value pairs
+            print("This is what coming")
+            print(data)
             user = authenticate(**data)
             if user and user.is_active:
                 return user
+            else:
+                try_user = User.objects.get(username=data.get('username'))
+                print(try_user.email)
+                data["username"] = try_user.email
+                user = authenticate(**data)
+                if user and user.is_active:
+                    return user
+                #try to find the user by username, as it may have been input
             raise serializers.ValidationError("Unable to login with credentials")

@@ -5,4 +5,4 @@ class TwistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Twist
-        fields = ('pk', 'user', 'author', 'tag')
+        fields = ('pk', 'user', 'author', 'tag', 'followed')

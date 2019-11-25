@@ -166,7 +166,7 @@ def relevant_posts(request, pk):
 
     # Get objects posts from a user first
 
-    twists = Twist.objects.filter(user=pk)
+    twists = Twist.objects.filter(user=pk, followed=True)
 
     author_pks = twists.values_list('author', flat=True)
     tag_names = twists.values_list('tag', flat=True)

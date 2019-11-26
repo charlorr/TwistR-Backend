@@ -169,10 +169,9 @@ def relevant_posts(request, pk):
     twists = Twist.objects.filter(user=pk, followed=True)
 
     author_pks = twists.values_list('author', flat=True)
-    tag_names = twists.values_list('tag', flat=True)
 
     data = []
-    data = Post.objects.filter(author__in=author_pks).order_by('-posted_date').filter(tag__name__in=tag_names).distinct()
+    data = Post.objects.filter(author__in=author_pks).order_by('-posted_date').distinct()
 
     serializer = PostSerializer(data,context={'request': request},many=True)
 

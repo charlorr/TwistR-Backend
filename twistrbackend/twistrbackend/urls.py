@@ -47,4 +47,7 @@ urlpatterns = [
     url(r'^api/unfollow/$', twists_views.unfollow), # Pass in user pk, author pk, and tag name
     url(r'^api/userstwists/(?P<pk>[0-9]+)$', twists_views.twists_by_user),
     url(r'^api/userlinetwists/(?P<pku>[0-9]+)/(?P<pka>[0-9]+)$', twists_views.twists_by_author),
+
+    url(r'^api/likes/$', twists_views.likes_list), # optionally pass in the user or post
+    url(r'^api/likes/(?P<pku>[0-9]+)/(?P<pkp>[0-9]+)$', twists_views.likes_detail),
 ]

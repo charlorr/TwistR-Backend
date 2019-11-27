@@ -37,6 +37,9 @@ urlpatterns = [
     url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
     url(r'^api/timeline/(?P<pk>[0-9]+)$', posts_views.relevant_posts),
 
+    url(r'^api/retwists/$', posts_views.retwists_list),
+    url(r'^api/retwists/(?P<pk>[0-9]+)$', posts_views.retwists_detail),
+
     url(r'^api/tags/$', posts_views.tags_list),
     url(r'^api/tags/(?P<pk>[0-9]+)$', posts_views.tags_detail),
     url(r'^api/usertags/(?P<pk>[0-9]+)$', posts_views.tags_by_user),

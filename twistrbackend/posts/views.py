@@ -4,7 +4,7 @@ from rest_framework import status
 
 from rest_framework.permissions import AllowAny
 
-from .models import Post, Tag
+from .models import Post, Retwist, Tag
 from users.models import User
 from twists.models import Twist
 from .serializers import *
@@ -81,6 +81,30 @@ def posts_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def retwists_list(request):
+    """
+ List retwists, or create a new post.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = Retwist.objects.all().order_by('-posted_date')
+
+        serializer = RetwistSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = RetwistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny,))
 def tags_list(request):
@@ -127,6 +151,32 @@ def posts_detail(request, pk):
 
     elif request.method == 'DELETE':
         post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AllowAny,))
+def retwists_detail(request, pk):
+    """
+ Retrieve, update or delete a retwist by id/pk.
+ """
+    try:
+        retwist = Retwist.objects.get(pk=pk)
+    except Retwist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = RetwistSerializer(retwist,context={'request': request})
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = RetwistSerializer(retwist, data=request.data,context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        retwist.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])

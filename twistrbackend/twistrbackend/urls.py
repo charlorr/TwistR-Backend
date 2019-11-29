@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^api/users/$', users_views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', users_views.users_detail),
     url(r'^api/users/login/$', users_views.user_login),
+    url(r'^api/auth_check/$', users_views.is_token_valid),
 
     url(r'^api/posts/$', posts_views.posts_list),
     url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),

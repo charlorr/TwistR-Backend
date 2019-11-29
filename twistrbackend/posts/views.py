@@ -4,7 +4,7 @@ from rest_framework import status
 
 from rest_framework.permissions import AllowAny
 
-from .models import Post, Tag
+from .models import Post, Retwist, Tag
 from users.models import User
 from twists.models import Twist
 from .serializers import *
@@ -81,6 +81,30 @@ def posts_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def retwists_list(request):
+    """
+ List retwists, or create a new post.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = Retwist.objects.all().order_by('-posted_date')
+
+        serializer = RetwistSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = RetwistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny,))
 def tags_list(request):
@@ -131,6 +155,32 @@ def posts_detail(request, pk):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((AllowAny,))
+def retwists_detail(request, pk):
+    """
+ Retrieve, update or delete a retwist by id/pk.
+ """
+    try:
+        retwist = Retwist.objects.get(pk=pk)
+    except Retwist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = RetwistSerializer(retwist,context={'request': request})
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = RetwistSerializer(retwist, data=request.data,context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        retwist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AllowAny,))
 def tags_detail(request, pk):
     """
  Retrieve, update or delete a tag by id/pk.
@@ -166,13 +216,12 @@ def relevant_posts(request, pk):
 
     # Get objects posts from a user first
 
-    twists = Twist.objects.filter(user=pk)
+    twists = Twist.objects.filter(user=pk, followed=True)
 
     author_pks = twists.values_list('author', flat=True)
-    tag_names = twists.values_list('tag', flat=True)
 
     data = []
-    data = Post.objects.filter(author__in=author_pks).order_by('-posted_date').filter(tag__name__in=tag_names).distinct()
+    data = Post.objects.filter(author__in=author_pks).order_by('-posted_date').distinct()
 
     serializer = PostSerializer(data,context={'request': request},many=True)
 

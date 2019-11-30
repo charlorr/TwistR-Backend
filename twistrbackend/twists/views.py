@@ -4,7 +4,7 @@ from rest_framework import status
 
 from rest_framework.permissions import AllowAny
 
-from .models import Twist
+from .models import Twist, Like
 from .serializers import *
 
 @api_view(['GET', 'POST'])
@@ -115,3 +115,54 @@ def twists_by_user(request, pk):
 
     serializer = TwistSerializer(twist,context={'request': request})
     return Response(serializer.data)
+
+# Like stuff
+
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def likes_list(request):
+    """
+ List likes, or create a new like.
+ """
+    if request.method == 'GET':
+        data = []
+
+        data = Like.objects.all()
+        user_param = request.query_params.get('user', None)
+        post_param = request.query_params.get('post', None)
+
+        if user_param is not None:
+            data = data.filter(user=user_param)
+
+        if post_param is not None:
+            data = data.filter(post=post_param)
+
+        serializer = LikeSerializer(data,context={'request': request},many=True)
+
+        return Response({'data': serializer.data})
+
+    elif request.method == 'POST':
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'DELETE'])
+@permission_classes((AllowAny,))
+def likes_detail(request, pku, pkp):
+    """
+ Retrieve, update or delete a like by id/pk of the user and post.
+ """
+    try:
+        like = Like.objects.get(user=pku, post=pkp)
+    except Like.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = LikeSerializer(twist,context={'request': request})
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

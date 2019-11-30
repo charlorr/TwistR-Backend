@@ -34,12 +34,10 @@ class LoginUserSerializer (serializers.Serializer):
             else:
                 try:
                     try_user = User.objects.get(username=data.get('username'))
-                    print("uh-oh stinky")
                     print(try_user.email)
                     data["username"] = try_user.email
                     user = authenticate(**data)
                     if user and user.is_active:
                         return user
                 except User.DoesNotExist:
-                    print ("poop and shit")
-            raise serializers.ValidationError("Unable to login with credentials")
+                    raise serializers.ValidationError("Unable to login with credentials")

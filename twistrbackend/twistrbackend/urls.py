@@ -31,11 +31,15 @@ urlpatterns = [
     url(r'^api/users/$', users_views.users_list),
     url(r'^api/users/(?P<pk>[0-9]+)$', users_views.users_detail),
     url(r'^api/users/login/$', users_views.user_login),
+    url(r'^api/auth_check/$', users_views.is_token_valid),
 
     url(r'^api/posts/$', posts_views.posts_list),
     url(r'^api/posts/(?P<pk>[0-9]+)$', posts_views.posts_detail),
     url(r'^api/userline/(?P<pk>[0-9]+)$', posts_views.posts_by_user),
     url(r'^api/timeline/(?P<pk>[0-9]+)$', posts_views.relevant_posts),
+
+    url(r'^api/retwists/$', posts_views.retwists_list),
+    url(r'^api/retwists/(?P<pk>[0-9]+)$', posts_views.retwists_detail),
 
     url(r'^api/tags/$', posts_views.tags_list),
     url(r'^api/tags/(?P<pk>[0-9]+)$', posts_views.tags_detail),
@@ -47,4 +51,7 @@ urlpatterns = [
     url(r'^api/unfollow/$', twists_views.unfollow), # Pass in user pk, author pk, and tag name
     url(r'^api/userstwists/(?P<pk>[0-9]+)$', twists_views.twists_by_user),
     url(r'^api/userlinetwists/(?P<pku>[0-9]+)/(?P<pka>[0-9]+)$', twists_views.twists_by_author),
+
+    url(r'^api/likes/$', twists_views.likes_list), # optionally pass in the user or post
+    url(r'^api/likes/(?P<pku>[0-9]+)/(?P<pkp>[0-9]+)$', twists_views.likes_detail),
 ]

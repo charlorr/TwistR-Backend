@@ -15,6 +15,7 @@ class User(AbstractUser):
     last_name = models.CharField("Last Name", max_length=30, default='')
     password = models.CharField(max_length=30, default='')
     bio = models.CharField(max_length=300, default='')
+    theme = models.CharField(max_length=30, default='default')
     joined_date = models.DateTimeField(default=datetime.datetime.now)
 
     def __str__(self):

@@ -142,7 +142,7 @@ def likes_list(request):
         return Response({'data': serializer.data})
 
     elif request.method == 'POST':
-        serializer = PostSerializer(data=request.data)
+        serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

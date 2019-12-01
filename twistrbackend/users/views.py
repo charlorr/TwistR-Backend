@@ -98,3 +98,7 @@ def user_delete(request,pk):
     name = user.username
     user.delete()
     return Response({"user deleted" : name}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def is_token_valid(request):
+    return Response(status=status.HTTP_200_OK)

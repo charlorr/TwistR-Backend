@@ -118,7 +118,7 @@ def twists_by_user(request, pk):
 
 # Like stuff
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 @permission_classes((AllowAny,))
 def likes_list(request):
     """
@@ -147,6 +147,21 @@ def likes_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        data = Like.objects.all()
+        user_param = request.query_params.get('user', None)
+        post_param = request.query_params.get('post', None)
+
+        if user_param is not None:
+            data = data.filter(user=user_param)
+
+        if post_param is not None:
+            data = data.filter(post=post_param)
+
+
+        data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'DELETE'])
 @permission_classes((AllowAny,))

@@ -40,6 +40,7 @@ urlpatterns = [
 
     url(r'^api/retwists/$', posts_views.retwists_list),
     url(r'^api/retwists/(?P<pk>[0-9]+)$', posts_views.retwists_detail),
+    url(r'^api/postretwist/(?P<post>[0-9]+)$', posts_views.retwists_by_post),
 
     url(r'^api/tags/$', posts_views.tags_list),
     url(r'^api/tags/(?P<pk>[0-9]+)$', posts_views.tags_detail),

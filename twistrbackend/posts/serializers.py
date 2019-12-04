@@ -11,7 +11,7 @@ class RetwistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Retwist
-        fields = ('pk', 'original_post', 'post')
+        fields = ('pk', 'original_post', 'post', 'posted_date')
 
 class TagSerializer(serializers.ModelSerializer):
 

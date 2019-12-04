@@ -181,6 +181,33 @@ def retwists_detail(request, pk):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes((AllowAny,))
+def retwists_by_post(request, post):
+    """
+ Retrieve, update or delete a retwist by post pk.
+ """
+    try:
+        retwist = Retwist.objects.get(post=post)
+    except Retwist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = RetwistSerializer(retwist,context={'request': request})
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = RetwistSerializer(retwist, data=request.data,context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        retwist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AllowAny,))
 def tags_detail(request, pk):
     """
  Retrieve, update or delete a tag by id/pk.
